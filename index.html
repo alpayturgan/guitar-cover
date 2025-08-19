@@ -274,7 +274,15 @@ footer {
 footer.show {
   transform: translateY(0);
 }
+body {
+  padding-bottom: 7rem; /* footer yüksekliği kadar */
+}
 
+/* Main için üst margin ayarı */
+main {
+  margin-top: 0 !important;
+  padding-top: 1rem; /* header'dan biraz boşluk */
+}
     
 @media (max-width: 640px) {
   #songList {
@@ -308,7 +316,14 @@ footer {
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
   }
-
+body {
+    padding-bottom: 8rem; /* mobilde footer biraz daha yüksek */
+  }
+  
+  main {
+    margin-top: 0.5rem !important;
+    padding-top: 0.5rem;
+  }
   
 }
 

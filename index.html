@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alpay Turgan</title>
+    <link href="./dist/output.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/eb2ca9ac13.js" crossorigin="anonymous"> </script>
+    <style>
+      #shuffleBtn:hover, #repeatBtn:hover {
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+/* Active button pressed effect */
+#shuffleBtn:active, #repeatBtn:active {
+  transform: scale(0.95);
+}
+
+      .hide, .invisible {
+  pointer-events: none;
+}
+    .triangle {
+      
+      aspect-ratio: 1/cos(30deg);
+      clip-path: polygon(50% 0,100% 100%,0 100%);
+    }
+    .triangle1 {
+     
+      aspect-ratio: cos(30deg);
+      clip-path: polygon(100% 0,0 50%,100% 100%);
+    }
+    @keyframes slideInFromRight {
+      from { opacity: 0; transform: translateX(100%); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideOutToRight {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(100%); }
+    }
+    @keyframes slideInFromBottom {
+      from { opacity: 0; transform: translateY(100%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideOutToBottom {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(100%); }
+    }
+
+    .slide-element {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    .slide-element.show {
+      animation: slideInFromRight 1s ease-out forwards;
+    }
+    .slide-element.hide {
+      animation: slideOutToRight 1s ease-in forwards;
+    }
+
+    .slide-bottom {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    .slide-bottom.show {
+      animation: slideInFromBottom 1s ease-out forwards;
+    }
+    .slide-bottom.hide {
+      animation: slideOutToBottom 1s ease-in forwards;
+    }
+
+    #songList {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      
+      max-height: 80%;
+      overflow-y: auto;
+      background: rgba(255,255,255,0.9);
+      padding: 1rem;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+      display: block;
+      transform: translateX(100%) translateY(-50%);
+      transition: transform 0.6s ease-out;
+    }
+    #songList.show {
+      transform: translateX(0) translateY(-50%);
+    }
+    #songList ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    #songList li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      transition: background-color 0.2s;
+    }
+    #songList li:hover {
+      background-color: rgba(0,0,0,0.1);
+    }
+    #songList li.active {
+  /* Daha koyu yarı saydam arkaplan */
+  background-color: rgba(0, 0, 0, 0.1);
+  /* Solda 4px kalınlığında turuncu vurgu çubuğu */
+  border-left: 4px solid #f97316;
+  /* Üst-alt padding’i ayarla, kenarlık kenara taşmasın */
+  padding-left: calc(0.5rem - 4px);
+}
+    #songList li.active .title,
+#songList li.active  {
+  color: #f97316;
+}
+    #songList img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-right: 0.5rem;
+    }
+    #songList .info {
+      flex: 1;
+    }
+    #songList .info .title {
+      font-weight: bold;
+    }
+    #songList .info .artist {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    /* Progress bar styling */
+    .progress-container {
+      position: relative;
+      height: 4px;
+      background-color: #3a3a3a;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+    .progress-bar {
+      height: 100%;
+      background-color: #f97316;
+      border-radius: 2px;
+      position: relative;
+      transition: width 0.1s ease;
+    }
+    .progress-handle {
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 12px;
+      background-color: #f97316;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .progress-container:hover .progress-handle {
+      opacity: 1;
+    }
+
+    /* Volume slider styling */
+    .volume-container {
+      position: relative;
+      height: 4px;
+      background-color: #3a3a3a;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+    .volume-bar {
+      height: 100%;
+      background-color: #f97316;
+      border-radius: 2px;
+      position: relative;
+      transition: width 0.1s ease;
+    }
+    .volume-handle {
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 12px;
+      background-color: #f97316;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .volume-container:hover .volume-handle {
+      opacity: 1;
+    }
+
+    /* Footer animation */
+    footer {
+      transform: translateY(100%);
+      transition: transform 0.6s ease-out;
+    }
+    footer.show {
+      transform: translateY(0);
+    }
+
+    /* Song list animation enhancement */
+    #songList {
+      transform: translateX(100%) translateY(-50%);
+      transition: transform 0.6s ease-out;
+    }
+    #songList.show {
+      transform: translateX(0) translateY(-50%);
+    }
+
+    /* Volume knob styling */
+ 
+
+    /* Search bar styling */
+    .search-bar {
+      background: #3a3a3a;
+      border: none;
+      border-radius: 9999px;
+      padding: 0.5rem 1rem;
+      color: white;
+      width: 100%;
+      outline: none;
+    }
+    .search-bar::placeholder {
+      color: #9ca3af;
+    }
+    .search-bar:focus {
+      background: #4a4a4a;
+    }
+
+    /* Button active states */
+    .btn-active {
+  
+  
+  transition: all 0.2s ease;
+}
+.buttonbutton{
+    color: #f97316 !important; /* Orange color when active */
+
+}
+
+    .rotate {
+  transform-origin: center center;
+  object-fit: cover;
+  clip-path: circle(50%);
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+img{
+  -webkit-user-drag: none;
+}
+    
+@media (max-width: 640px) {
+  #songList {
+    top: 11%;
+    bottom: 15%;
+    right: 50%;
+    transform: translateY(100%) translateX(50%);
+    width: 100%; /* istersen tam genişlik */
+    max-height: 100%; /* üstünü kaplamasın diye */
+   
+    z-index: 100;
+    opacity: 0;
+     pointer-events: none;
+     transform: translateY(100%) translateX(50%);
+    transition: transform 1s ease-out, opacity 1s ease-out;
+  }
+  #songList.show {
+    transform: translateY(0) translateX(50%);
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) translateX(50%);
+  }
+  
+
+
+  
+}
+
+
+    </style>
+  </head>
+  <body class="bg-white min-h-screen flex flex-col overflow-hidden select-none max-xxs:invisible">
+    <!-- Header -->
+    <header class="w-full h-20 bg-gray-1000 rounded-b-lg grid grid-cols-3 items-center px-4 relative max-sm:rounded-b-4xl z-100">
+    <!-- Sol ikon -->
+    <div class="2xl:ml-10 xl:ml-10 lg:ml-10 md:ml-10 sm:ml-10 flex items-center">
+        <i class="ml-5 fa-solid fa-music text-3xl text-gray-1100"></i>
+    </div>
+
+    <!-- Orta kısım -->
+    <div class="flex justify-center items-center">
+        <div class="relative w-[300px]"> <!-- arama kutusu genişliği -->
+            <input 
+                type="text" 
+                id="searchBar" 
+                class="search-bar 2xl:h-10 xl:h-9 lg:h-8 md:h-8 sm:h-7 xxs:h-6
+                
+                
+                w-full pl-3 pr-10 rounded-md border border-gray-400"
+                placeholder=""
+            />
+            <!-- ikon inputun sağında -->
+            <i 
+                class="fa-solid fa-magnifying-glass text-gray-1000 2xl:text-2xl xl:text-xl lg:text-lg md:text-lg sm:text-base xxs:text-base
+                absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                id="searchIcon">
+            </i>
+        </div>
+    </div>
+
+    <!-- Sağ boşluk (gerekirse başka şey koyabilirsin) -->
+    <div></div>
+</header>
+
+   <main class="flex-grow flex justify-center items-center p-4 2xl:mt-0 xl:mt-0 lg:mt-0 md:mt-12 sm:mt-12 xxs:mt-0  ">
+    <div id="wrapper" class="relative w-full 
+    
+    2xl:max-w-[1160px]    xl:max-w-[962px]  lg:max-w-[765px] md:max-w-[580px] sm:max-w-[485px]   xxs:max-w-[300px] 
+    
+    aspect-[1160/524]  ">
+    
+      
+      <!-- Background Panels -->
+      <div class="absolute inset-0 bg-gray-1000 rounded-5xl z-20 
+      
+      2xl:translate-x-[-5%] 2xl:translate-y-[2%] 2xl:w-[887px] 2xl:rotate-0 2xl:h-auto 2xl:top-[0px]
+      xl:translate-x-[-5%] xl:translate-y-[2%]  xl:w-[740px] xl:rotate-0 xl:h-auto xl:top-[0px]
+      lg:translate-y-[2%] lg:translate-x-[-4.5%] lg:w-[600px] lg:rotate-0 lg:h-auto lg:top-[0px]
+      md:w-[530px] md:rotate-90 md:h-[285px] md:translate-x-[4.5%] md:top-[-40px]
+      sm:w-[500px] sm:rotate-90 sm:h-[285px] sm:translate-x-[-1%] sm:top-[-85px]
+      
+      
+      
+      
+      
+      
+     
+      xxs:w-[420px] xxs:rotate-90 xxs:h-[250px] xxs:translate-x-[-14%] xxs:top-[-8.5rem]
+     
+      
+
+     
+      
+      
+      "></div>
+
+
+
+      <div class="absolute inset-0  bg-gray-1100 rounded-5xl z-20  
+      
+      
+      2xl:w-[887px] 2xl:rotate-0 2xl:translate-x-[15%] 2xl:translate-y-[2%]   2xl:h-auto
+      xl:w-[740px] xl:rotate-0 xl:translate-x-[15%] xl:translate-y-[2%]   xl:h-auto
+      lg:w-[575px] lg:rotate-0 lg:translate-x-[15%] lg:translate-y-[2%]  lg:h-auto
+      md:w-[444px] md:rotate-90  md:translate-x-[15%] md:h-[285px] md:translate-y-[1.5%]  
+      sm:w-[400px] sm:rotate-90  sm:translate-x-[11.125%] sm:h-[286px] sm:translate-y-[-10%] 
+
+
+      
+      xxs:w-[380px] xxs:rotate-90  xxs:translate-x-[-10.25%] xxs:h-[251.5px] xxs:translate-y-[-23%]
+      "></div>
+      
+      <!-- Center Large Circle -->
+      <div class="absolute -translate-x-1/2 
+      
+      2xl:h-[499px] 2xl:top-1/2 2xl:left-1/2 
+      2xl:w-[499px] xl:top-1/2 xl:left-1/2 
+      xl:w-[414px] lg:top-1/2 lg:left-1/2 
+      xl:h-[414px]
+      lg:h-[330px] lg:w-[330px]
+      md:w-[249px] md:h-[249px] md:left-[50%] md:top-1/2
+      sm:w-[237.5px] sm:h-[237.5px] sm:left-[50%] sm:top-1/2
+     
+      xxs:w-[225px] xxs:h-[225px] xxs:left-[50%] xxs:top-1/2
+      
+      bg-gray-1200 rounded-full z-20 translate-y-[-48%]"></div>
+      
+      <!-- Center Small White Circle -->
+      <div class="absolute -translate-x-1/2 
+      
+      2xl:h-[49px] 2xl:w-[49px] 2xl:top-1/2 2xl:left-1/2 
+      xl:h-[41px] xl:w-[41px] xl:top-1/2 xl:left-1/2 
+      lg:h-[33px] lg:w-[33px] lg:top-1/2 lg:left-1/2 
+      md:h-[24px] md:w-[24px] md:top-1/2 md:left-1/2 
+      sm:h-[19px] sm:w-[19px] sm:top-1/2 sm:left-1/2
+     
+      xxs:h-[20px] xxs:w-[20px] xxs:top-1/2 xxs:left-1/2
+      
+      bg-white rounded-full z-30 translate-y-[-29%]"></div>
+
+      <!-- Center Song siksok -->
+      <div id="siksok" class="absolute -translate-x-1/2 left-1/2 top-[210%]   max-sm:h-10  max-sm:w-[200px] z-90 2xl:invisible xl:invisible lg:invisible md:invisible sm:invisible xxs:invisible">
+          
+          <div id="footerTitle" class="text-orange-400 text-2xl font-medium truncate text-center ">Select a Song</div>
+          <div id="footerArtist" class="text-gray-1100 text-xl truncate text-center">Artist</div>
+      </div>
+      
+      <!-- Card Image -->
+      <img src="./img/Card.png" alt="Card"
+           class="absolute top-1/2 
+           
+           2xl:h-[500px] 2xl:rotate-0 2xl:w-[860px] 2xl:translate-y-[-48%] 2xl:translate-x-[17%]
+           xl:h-[415px] xl:rotate-0 xl:w-[714px] xl:translate-y-[-48%]  xl:translate-x-[17.5%]
+           lg:h-[330px] lg:w-[560px] lg:rotate-0 lg:rounded-5xl lg:translate-y-[-48%] lg:translate-x-[17%] 
+           md:w-[430px] md:h-[270px] md:rotate-90 md:translate-x-[17%] md:translate-y-[-44%] md:rounded-5xl
+           sm:w-[387.5px] sm:h-[275px] sm:rotate-90 sm:translate-x-[13%] sm:translate-y-[-48.5%] sm:rounded-5xl 
+          
+
+
+
+          
+          xxs:w-[235px] xxs:h-[365px] xxs:rotate-0 xxs:translate-x-[14%] xxs:translate-y-[-49.5%] xxs:rounded-5xl 
+           z-80  "/>
+
+      <!-- Right Vertical Bars -->
+      <div class="absolute    bg-gray-1200 rounded-3xl z-90 
+      
+      2xl:h-[70px] 2xl:w-[40px] 2xl:left-[82%] 2xl:top-[80%] 2xl:rotate-0
+      xl:h-[58px] xl:w-[33px]   xl:left-[82%] xl:top-[80%] xl:rotate-0
+      lg:h-[45px] lg:w-[25px]   lg:left-[80%] lg:top-[80%] lg:rotate-0
+      md:h-[45px] md:w-[25px]  md:left-[32.5%]  md:top-[115%] md:rotate-90
+      sm:h-[40px] sm:w-[25px] sm:left-[30.5%] sm:top-[115%] sm:rotate-90 
+
+
+
+   
+      xxs:h-[40px] xxs:w-[25px] xxs:left-[22.5%] xxs:top-[140%] xxs:rotate-90
+      "></div>
+
+
+
+      <div class="absolute   bg-gray-1200 rounded-3xl z-90 
+      
+       2xl:h-[40px] 2xl:w-[40px] 2xl:left-[82%] 2xl:rotate-0 2xl:top-1/8
+       xl:h-[33px] xl:w-[33px] xl:left-[82%] xl:rotate-0 xl:top-1/8
+       lg:h-[25px] lg:w-[25px] lg:left-[80%] lg:rotate-0 lg:top-1/8
+       md:h-[25px] md:w-[25px] md:left-[62.5%] md:rotate-90 md:top-[117.5%]
+      sm:h-[25px] sm:w-[25px] sm:left-[66.5%] sm:rotate-90 sm:top-[118%] 
+
+
+      
+      xxs:h-[25px] xxs:w-[25px] xxs:left-[72%] xxs:rotate-90 xxs:top-[144.5%]
+      
+      " ></div>
+
+      <!-- Back Wide Panel -->
+      <div class="absolute inset-0   bg-gray-1200 rounded-5xl z-10 
+      
+      2xl:h-[544px] 2xl:w-[1090px] 2xl:rotate-0 2xl:translate-x-[-5%] 2xl:md:translate-y-[0%]
+      xl:h-[454px] xl:w-[908px] xl:rotate-0 xl:translate-x-[-5%] xl:md:translate-y-[0%]
+      lg:h-[360px] lg:w-[710px] lg:rotate-0 lg:translate-x-[-5%] lg:translate-y-[0%]
+      md:h-[300px] md:w-[550px] md:rotate-90  max-lg:top-[-50px] md:translate-x-[2.5%] md:translate-y-[0%]
+      sm:h-[300px] sm:w-[525px] sm:rotate-90  sm:translate-x-[-3.5%] sm:translate-y-[-13.5%]
+
+
+      
+      xxs:h-[275px] xxs:w-[500px] xxs:rotate-90  xxs:translate-x-[-19.5%] xxs:translate-y-[-25%]
+      
+      
+      "></div>
+
+      
+
+      <!-- Orange Details -->
+      <div id="playable" class="absolute  triangle bg-orange-400 z-100  
+      2xl:w-[30px] 2xl:left-[82.5%] 2xl:top-[86.5%] 2xl:rotate-0
+      xl:w-[25px] xl:left-[82.5%] xl:top-[86.5%] xl:rotate-0
+      lg:w-[20px] lg:left-[80.5%] lg:top-[86.5%] lg:rotate-0
+      md:w-[18px] md:left-[31.75%] md:rotate-90 md:top-[120.5%]
+      sm:w-[16px] sm:left-[30%] sm:rotate-90 sm:top-[121%] 
+      
+
+
+
+
+
+      
+      xxs:w-[16px] xxs:left-[22%] xxs:rotate-90 xxs:top-[149%]
+      
+      "></div>
+      
+      
+      
+      
+      
+      <div class="absolute   triangle1 bg-orange-400 z-100
+      2xl:w-[25px] 2xl:h-[30px] 2xl:left-[82.3%] 2xl:top-[13.5%] 2xl:rotate-0
+      xl:h-[25px] xl:left-[82.3%] xl:top-[13.5%] xl:rotate-0
+      lg:h-[20px] lg:left-[80.3%] lg:top-[13.5%] lg:rotate-0
+      md:h-[18px] md:left-[63.375%] md:rotate-90 md:top-[118.5%] 
+      sm:h-[17px] sm:left-[67.625%] sm:rotate-90 sm:top-[119%] 
+
+
+
+
+     
+      xxs:h-[17px] xxs:left-[73.5%] xxs:rotate-90 xxs:top-[146%]
+      "
+      
+      
+      
+      ></div>
+      <div id="stoppable">
+      <div class="absolute 
+      2xl:w-[30px] 2xl:h-[8px] 2xl:left-[82.5%] 2xl:top-[84.5%] 2xl:rotate-0
+      xl:w-[25px] xl:h-[6px] xl:left-[82.5%]  xl:top-[84.5%] xl:rotate-0
+      lg:w-[20px] lg:h-[5px] lg:left-[80.5%] lg:top-[84.5%] lg:rotate-0
+      md:w-[18px] md:h-[5px] md:left-[34%] md:top-[122.75%] md:rotate-90 
+      sm:w-[16px] sm:h-[4.5px] sm:left-[32.5%] sm:top-[123%] sm:rotate-90 
+
+
+
+
+      
+      xxs:w-[16px] xxs:h-[4.5px] xxs:left-[25.5%] xxs:top-[152.5%] xxs:rotate-90
+      
+      
+      
+      
+      bg-orange-400 rounded-5xl z-100
+      
+      
+      
+      
+      "></div>
+      <div class="absolute 
+      2xl:w-[30px] 2xl:h-[8px] 2xl:left-[82.5%] 2xl:top-[82%] 2xl:rotate-0
+      xl:w-[25px] xl:h-[6px] xl:left-[82.5%] xl:top-[82%] xl:rotate-0
+      lg:w-[20px] lg:h-[5px] lg:left-[80.5%] lg:top-[82%] lg:rotate-0
+      md:w-[18px] md:h-[5px] md:left-[35.25%] md:top-[122.75%] md:rotate-90
+      sm:w-[16px] sm:h-[4.5px] sm:left-[34%] sm:top-[123%] sm:rotate-90 
+
+
+
+      
+      xxs:w-[16px] xxs:h-[4.5px] xxs:left-[27.75%] xxs:top-[152.5%] xxs:rotate-90
+      bg-orange-400 rounded-5xl z-100"></div>
+</div>
+      <!-- Left Bottom Circles -->
+      <div class="absolute 
+      
+      2xl:h-[40px] 2xl:w-[40px] 2xl:left-[1.95%] 2xl:top-1/5 
+      xl:w-[33px] xl:h-[33px] xl:left-[1.95%] xl:top-1/5 
+      lg:h-[25px] lg:w-[25px] lg:left-[2.222224%] lg:top-1/5 
+      md:h-[25px] md:w-[25px] md:left-[32%] md:top-[-47%]
+      sm:h-[25px] sm:w-[25px] sm:left-[29.9%] sm:top-[-67%] 
+
+
+
+
+      xxs:h-[25px] xxs:w-[25px] xxs:left-[21%] xxs:top-[-135%]
+
+      
+      
+      bg-gray-1200 rounded-3xl z-50"></div>
+      <div class="absolute 
+      
+      2xl:h-[100px] 2xl:w-[100px] 2xl:top-[65%] 2xl:left-[-0.5%] 
+      xl:h-[83px] xl:w-[83px] xl:top-[65%] xl:left-[-0.5%] 
+      lg:h-[65px] lg:w-[65px] lg:top-[65%] lg:left-[-0.5%] 
+      md:h-[50px] md:w-[50px] md:top-[-52.5%] md:left-[57.5%]
+      sm:h-[55px] sm:w-[55px] sm:top-[-74.5%] sm:left-[59%]
+      
+      
+
+     
+      xxs:h-[55px] xxs:w-[55px] xxs:top-[-147.5%] xxs:left-[64%]
+
+      
+      bg-gray-1200 rounded-full z-50"></div>
+
+      <!-- ON / OFF Labels -->
+      <p class="absolute   z-50
+      2xl:left-[2.6%] 2xl:top-[11.5%] 2xl:text-base
+      xl:left-[2.4%] xl:top-[11.5%] xl:text-base
+      lg:left-[2.2%] lg:top-[10.5%] lg:text-base
+      md:left-[32.25%] md:top-[-57.5%] md:text-base
+      sm:left-[30%] sm:top-[-80%]  sm:text-base
+
+
+
+    
+     xxs:left-[21.5%] xxs:top-[-155%] xxs:text-sm
+    
+      ">ON</p>
+      <p class="absolute  z-50
+      2xl:left-[2.5%] 2xl:top-[31%] 2xl:text-base
+      xl:left-[2.25%] xl:top-[31%] xl:text-base
+      lg:left-[2.1%] lg:top-[31%] lg:text-base
+      md:left-[32%] md:top-[-36.5%] md:text-base
+      sm:left-[29.75%] sm:top-[-55.75%] sm:text-base
+
+
+    
+      xxs:left-[21%] xxs:top-[-110%] xxs:text-sm
+
+
+
+      ">OFF</p>
+
+      <!-- Switch -->
+      <div id="orangeBar"
+           class="absolute top-[27.6%] 
+           2xl:h-[50px] 2xl:w-[20px] 2xl:left-[3.7%] 2xl:visible 2xl:-translate-x-1/2 2xl:-translate-y-1/2 
+           xl:h-[42px] xl:w-[17px] xl:left-[3.7%] xl:visible xl:-translate-x-1/2 xl:-translate-y-1/2 
+           lg:h-[35px] lg:w-[15px] lg:left-[3.9%] lg:visible lg:-translate-x-1/2 lg:-translate-y-1/2 
+           md:h-[30px] md:w-[12.5px] md:left-[34.25%] md:visible md:-translate-x-1/2 md:-translate-y-[640%] 
+           sm:h-[30px] sm:w-[12.5px] sm:left-[32.5%]  sm:-translate-x-1/2 sm:-translate-y-[670%] 
+
+
+
+       
+           xxs:w-[12.5px] xxs:h-[30px] xxs:left-[25.25%] xxs:-translate-x-1/2 xxs:-translate-y-[700%]
+           
+           
+           bg-orange-400 border shadow-2xl rounded-full z-50 transition-all duration-300 ease-in-out cursor-pointer">
+      </div>
+
+
+      <div id="circle"
+             class="absolute -translate-x-1/2 -translate-y-1/2 
+             
+             2xl:top-[23.5%] 2xl:left-[0%] 2xl:h-[15px] 2xl:w-[15px] 
+             xl:top-[23.5%] xl:left-[0%] xl:h-[15px] xl:w-[15px] 
+             lg:top-[23.5%] lg:left-[0%] lg:h-[15px] lg:w-[15px] 
+             md:top-[-42%] md:left-[30%] md:h-[10px] md:w-[10px]
+             sm:top-[-62%] sm:left-[28%] sm:h-[10px] sm:w-[10px] 
+
+
+
+
+          
+             xxs:top-[-125%] xxs:left-[17.5%] xxs:h-[10px] xxs:w-[10px]
+             bg-red-500 rounded-full z-50 transition-colors duration-300 ease-in-out">
+      </div>
+
+      <!-- Volume Labels and Button -->
+      <p class="absolute  z-50
+      2xl:top-[82%] 2xl:left-[-2%]  2xl:text-lg
+      xl:top-[82%] xl:left-[-2%]  xl:text-base
+      lg:top-[82%] lg:left-[-2%]  lg:text-base
+      md:top-[-37.5%] md:left-[54.5%]  md:text-base
+      sm:top-[-55.5%] sm:left-[54.5%]  sm:text-base
+      
+      
+
+
+      xxs:top-[-115%] xxs:left-[58%]  xxs:text-sm
+      ">Min</p>
+      <p class="absolute   z-50
+      2xl:left-[7.5%] 2xl:top-[82%] 2xl:text-lg
+      xl:left-[7.5%] xl:top-[82%] xl:text-base
+      lg:left-[6.5%] lg:top-[82%] lg:text-base
+      md:left-[65%] md:top-[-37.5%] md:text-base
+      sm:left-[70%] sm:top-[-55.5%] sm:text-base
+
+
+     
+      xxs:left-[80%] xxs:top-[-115%]  xxs:text-sm
+      ">Max</p>
+      <p class="absolute   z-50
+      2xl:top-[60%] 2xl:left-[1%] 2xl:text-lg
+      xl:top-[60%] xl:left-[1.2%] xl:text-base
+      lg:top-[58%] lg:left-[0.2%] lg:text-base
+      md:top-[-60.5%] md:left-[57%] md:text-base
+      sm:top-[-84%] sm:left-[59%] sm:text-base
+      
+      
+ 
+       xxs:top-[-161%] xxs:left-[65%] xxs:text-sm
+
+      ">Volume</p>
+      
+      
+        <div id="volumeKnob" class="absolute flex justify-center items-center 
+      2xl:h-[80px] 2xl:w-[80px] 2xl:left-[0.31%] 2xl:top-[67%]
+      xl:h-[65px] xl:w-[65px] xl:left-[0.4%] xl:top-[67.25%] 
+      lg:h-[50px] lg:w-[50px] lg:left-[0.45%] lg:top-[67.25%]
+      md:h-[42px] md:w-[42px] md:left-[58.26%] md:top-[-51%]
+      sm:h-[45px] sm:w-[45px] sm:left-[60%] sm:top-[-72%] 
+
+
+    
+      xxs:h-[45px] xxs:w-[45px] xxs:left-[65.75%] xxs:top-[-143.5%]
+      bg-orange-400 rounded-full z-55 ">
+
+
+
+
+
+        <div id="volumeKnobInner" class="
+  2xl:w-[10px] 2xl:h-[10px]
+  xl:w-[8px] xl:h-[8px]
+  lg:w-[6px] lg:h-[6px]
+  md:w-[5px] md:h-[5px]
+  sm:w-[5px] sm:h-[5px]
+
+
+ 
+  xxs:w-[5px] xxs:h-[5px]
+  rounded-full
+  bg-white rotate-270  
+  "></div>
+      </div>
+
+       <div id="clippedCD"  class="
+       
+       2xl:h-[500px] 2xl:w-[500px] 
+       xl:h-[415px] xl:w-[415px]
+       lg:h-[330px] lg:w-[330px]
+      md:h-[250px] md:w-[250px]
+      sm:h-[235px] sm:w-[235px]
+
+    
+      xxs:h-[225px] xxs:w-[225px]
+       
+       show slide-element absolute top-[49%] left-[91.5%] -translate-x-1/2 translate-y-[-47.2%]  object-cover z-0 transition-all duration-1000">
+       <img id="cdwrapper"
+         src="https://music-deneme.pages.dev/image/cdnew"
+         alt="Cropped CD" class="cd"/>
+  </div>
+
+
+    
+        </div>
+
+    <!-- Sliding Images -->
+    <img id="img1"
+         src="https://music-deneme.pages.dev/image/meymun"
+         alt="Album 1"
+         class="slide-element absolute top-1/2 left-[92%] -translate-x-1/2 -translate-y-1/2 
+        
+        2xl:h-[300px] 
+        xl:h-[250px]
+        lg:h-[200px]
+        md:h-[150px] 
+        sm:h-[150px]
+     
+        xxs:h-[125px]
+
+         
+         
+         
+         
+         object-cover z-55"/>
+    <img id="img2"
+         src="https://music-deneme.pages.dev/image/cdnew"
+         alt="CD"
+         class="slide-element absolute top-1/2 left-[90%] -translate-x-1/2 -translate-y-1/2 
+         
+        2xl:h-[275px] 
+        xl:h-[230px]
+        lg:h-[180px]
+        md:h-[130px]
+        sm:h-[130px]
+        
+        xxs:h-[120px]
+        
+         
+         
+         object-cover z-50"/>
+    
+    <!-- CD Clipping -->
+   
+      
+  </main>
+
+  <!-- Song List -->
+ <div id="songList" class="rounded-2xl max-sm:rounded-3xl sm:w-[165px] md:w-[215px] lg:w-[215px] xl:w-[250px] 2xl:w-[300px] 2xl:visible xl:visible lg:visible md:visible sm:visible xxs:visible">
+  <ul></ul>
+</div>
+
+
+  <footer class="flex items-end z-100">
+  <div class="w-full bg-gray-1000 px-4 py-3 rounded-t-lg h-20 relative max-sm:rounded-t-4xl
+              max-sm:h-28 max-sm:py-0">
+    <div class="flex items-center justify-between max-w-full">
+      <button
+  id="listToggle"
+  aria-pressed="false"
+  class="hidden max-sm:inline-flex items-center justify-center w-9 h-9 bg-gray-1100 hover:bg-orange-600 text-white rounded-full shadow-md transition-colors duration-200 absolute right-4 top-1/4 -translate-y-1/2 z-50"
+  title="List"
+>
+  <span class="sr-only">Show list</span>
+  <i id="selam" class="fa-solid fa-bars"></i>
+</button>
+
+      <!-- Left - Song Info -->
+      <div class="flex items-center space-x-3 flex-shrink-0 w-1/4 pl-15
+                  max-sm:w-0 max-sm:pl-0 max-sm:invisible">
+        <div class="w-12 h-12 bg-gray-1100 rounded-2xl flex-shrink-0 overflow-hidden max-sm:invisible">
+          <img id="footerAlbumArt" src="https://music-deneme.pages.dev/image/meymun" alt="Album Cover" class="w-full h-full object-cover">
+        </div>
+        <div class="min-w-0 max-sm:invisible">
+          <div id="footerTitleMobile" class="text-orange-400 text-sm font-medium truncate">Select a Song</div>
+          <div id="footerArtistMobile" class="text-gray-1100 text-xs truncate">Artist</div>
+        </div>
+      </div>
+
+      <!-- Center - Controls and Progress Bar -->
+      <div class="flex-1 max-w-2xl mx-8 relative
+                  max-sm:mx-0 max-sm:absolute max-sm:left-1/2 max-sm:-translate-x-1/2
+                  max-sm:w-[90%]
+                  max-sm:top-[38%] max-sm:-translate-y-1/2"> <!-- <- yukarı taşımak için top değeri değişti -->
+        <!-- Control Buttons -->
+        <div class="flex items-center justify-center space-x-5 mb-2 max-sm:mb-3">
+          <button id="shuffleBtn" class="text-gray-1100 hover:text-orange-400 transition-colors ">
+            <i class="fas fa-random text-l"></i>
+          </button>
+          <button id="footerPrev" class="text-gray-1100 hover:text-orange-400 transition-colors
+                                       max-sm:w-10 max-sm:h-10 max-sm:text-xl">
+            <i class="fas fa-step-backward text-2xl"></i>
+          </button>
+          <button id="footerPlay" class="bg-orange-500 hover:bg-orange-600 text-white rounded-full w-9 h-9 flex items-center justify-center transition-colors
+                                      max-sm:w-10 max-sm:h-10">
+            <i class="fas fa-play text-m"></i>
+          </button>
+          <button id="footerNext" class="text-gray-1100 hover:text-orange-400 transition-colors
+                                       max-sm:w-10 max-sm:h-10 max-sm:text-xl">
+            <i class="fas fa-step-forward text-2xl"></i>
+          </button>
+          <button id="repeatBtn" class="text-gray-1100 hover:text-orange-400 transition-colors">
+            <i class="fas fa-redo text-l"></i>
+          </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="flex items-center space-x-3">
+          <span id="currentTime" class="text-gray-400 text-xs font-mono">0:00</span>
+          <div id="progressContainer" class="flex-1 progress-container ">
+            <div id="progressBar" class="progress-bar" style="width: 0%">
+              <div class="progress-handle"></div>
+            </div>
+          </div>
+          <span id="totalTime" class="text-gray-1100 text-xs font-mono">0:00</span>
+        </div>
+
+
+      </div>
+
+      <!-- Right - Volume Control -->
+      <div class="flex items-center space-x-3 w-1/4 justify-end mr-10
+                  max-sm:w-0 max-sm:mr-0 max-sm:invisible">
+        <button id="footerVolumeIcon" class="text-gray-1100 hover:text-orange-400 transition-colors">
+          <i class="fas fa-volume-up"></i>
+        </button>
+        <div id="volumeContainer" class="w-20 volume-container">
+          <div id="volumeBar" class="volume-bar" style="width: 75%">
+            <div class="volume-handle"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+
+  
+  </body>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Create audio context for click sounds
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playClick() {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.05);
+    }
+
+    function playOpen() {
+  const audio = new Audio("https://music-deneme.pages.dev/music/open");
+  audio.play();
+}
+function playClose() {
+  const audio = new Audio("https://music-deneme.pages.dev/music/close");
+  audio.play();
+}
+function playInsert() {
+  const audio = new Audio("https://music-deneme.pages.dev/music/insert");
+  audio.play();
+}
+function playRemove() {
+  const audio = new Audio("https://music-deneme.pages.dev/music/remove");
+  audio.play();
+}
+
+
+
+    // Song data
+    const songs = [
+     {
+            title: "Visitor",
+            artist: "IU",
+            file: "https://music-deneme.pages.dev/music/visitor",
+            image: "https://music-deneme.pages.dev/image/visitor",
+            duration: "",
+          },
+          {
+            title: "Plug In Baby",
+            artist: "Muse",
+            file: "https://music-deneme.pages.dev/music/plug",
+            image: "https://music-deneme.pages.dev/image/plug",
+            duration: "",
+          },
+          {
+            title: "Paint It Black",
+            artist: "The Rolling Stones",
+            file: "https://music-deneme.pages.dev/music/paint",
+            image: "https://music-deneme.pages.dev/image/paint",
+            duration: "",
+          },
+          {
+            title: "Don't",
+            artist: "Loco, HWASA",
+            file: "https://music-deneme.pages.dev/music/loco",
+            image: "https://music-deneme.pages.dev/image/loco",
+            duration: "",
+          },
+          {
+            title: "Uprising",
+            artist: "Muse",
+            file: "https://music-deneme.pages.dev/music/uprising",
+            image: "https://music-deneme.pages.dev/image/uprising",
+            duration: "",
+          },
+          {
+            title: "Lost On You",
+            artist: "LP",
+            file: "https://music-deneme.pages.dev/music/lost",
+            image: "https://music-deneme.pages.dev/image/lost",
+            duration: "",
+          },
+          {
+            title: "Attention",
+            artist: "Charlie Puth",
+            file: "https://music-deneme.pages.dev/music/attention",
+            image: "https://music-deneme.pages.dev/image/attention",
+            duration: "",
+          },
+          {
+            title: "Judas",
+            artist: "Lady Gaga",
+            file: "https://music-deneme.pages.dev/music/judas",
+            image: "https://music-deneme.pages.dev/image/judas",
+            duration: "",
+          },{
+            title: "Let It Happen",
+            artist: "Tame Impala",
+            file: "https://music-deneme.pages.dev/music/letithappen",
+            image: "https://music-deneme.pages.dev/image/letithappen",
+            duration: "",
+          },{
+            title: "Careless Whisper",
+            artist: "George Michael",
+            file: "https://music-deneme.pages.dev/music/careless",
+            image: "https://music-deneme.pages.dev/image/careless",
+            duration: "",
+          },
+          {
+            title: "Linganguliguuuli",
+            artist: "Bocchi",
+            file: "https://music-deneme.pages.dev/music/lingangu",
+            image: "https://music-deneme.pages.dev/image/lingangu",
+            duration: "",
+          },
+    ];
+const audioPlayer = new Audio();
+    audioPlayer.volume = 0.75;
+
+
+    // Player state
+    let currentIndex = 0;
+    let isPlaying = false;
+    let currentVolume = 0.75;
+    let isMuted = false;
+    let isShuffled = false;
+    let isRepeated = false;
+    let originalSongsOrder = [...songs];
+    let filteredSongs = [...songs];
+    let cdReturnPosition = { top: '', left: '', transform: '' };
+          let isKnobDragging = false;
+
+    // DOM elements
+    const orangeBar = document.getElementById('orangeBar');
+ 
+    const circle = document.getElementById('circle');
+    const clippedCD = document.getElementById('clippedCD');
+    const slides = Array.from(document.querySelectorAll('.slide-element:not(#clippedCD)'));
+    const triggers = ['img1','img2'].map(id => document.getElementById(id));
+    const songList = document.getElementById('songList');
+    const ul = songList.querySelector('ul');
+    const footer = document.querySelector('footer');
+    const searchBar = document.getElementById('searchBar');
+    const volumeKnob = document.getElementById('volumeKnob');
+    const volumeKnobInner = document.getElementById('volumeKnobInner');
+    const elpause = document.getElementById('stoppable');
+    const elplay = document.getElementById('playable');
+    const cdwrapper = document.getElementById('cdwrapper');
+
+    // Footer elements
+    const footerArt = document.getElementById('footerAlbumArt');
+    const footerTitle = document.getElementById('footerTitle');
+    const footerArtist = document.getElementById('footerArtist');
+    const footerTitleMobile = document.getElementById('footerTitleMobile');
+    const footerArtistMobile = document.getElementById('footerArtistMobile');
+    const btnPlay = document.getElementById('footerPlay');
+    const btnPrev = document.getElementById('footerPrev');
+    const btnNext = document.getElementById('footerNext');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const repeatBtn = document.getElementById('repeatBtn');
+    const volIcon = document.getElementById('footerVolumeIcon');
+    const currentTime = document.getElementById('currentTime');
+    const totalTime = document.getElementById('totalTime');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const volumeContainer = document.getElementById('volumeContainer');
+    const volumeBar = document.getElementById('volumeBar');
+    
+
+    
+const listToggleBtn = document.getElementById('listToggle');
+const selam = document.getElementById('selam');
+// helperler (her yerden erişilebilsin diye DOMContentLoaded scope içinde tanımlı)
+function setListBtnPressed(val) {
+  if (!listToggleBtn) return;
+  listToggleBtn.setAttribute('aria-pressed', String(val));
+}
+function updateListToggleAppearance(isListVisible) {
+  if (!listToggleBtn) return;
+  // isListVisible === true  -> liste görünüyor -> buton gri/normal
+  // isListVisible === false -> liste gizli -> buton turuncu (senin istediğin)
+  listToggleBtn.classList.remove('bg-gray-1100', 'text-orange-400', 'btn-active');
+  listToggleBtn.classList.add('bg-orange-500', 'text-white');
+
+  selam.classList.remove('fa-bars');
+    selam.classList.add('fa-xmark');
+  if (!isListVisible) {
+    listToggleBtn.classList.remove('bg-orange-500');
+    listToggleBtn.classList.add('bg-gray-1100');
+    // opsiyonel: ekstra görsel vurgu için btn-active sınıfı
+    listToggleBtn.classList.add('btn-active');
+    selam.classList.remove('fa-xmark');
+    selam.classList.add('fa-bars');
+  }
+}
+
+
+
+// Eğer buton varsa eventleri bağla
+if (listToggleBtn) {
+  // İlk durum ayarı
+  updateListToggleAppearance(songList.classList.contains('show'));
+  setListBtnPressed(songList.classList.contains('show'));
+
+  listToggleBtn.addEventListener('click', (e) => {
+    
+    // sadece küçük ekranlar için bu davranış aktif olsun
+    if (window.innerWidth >= 640) return;
+
+    const willShow = !songList.classList.contains('show'); // true -> gösterecek
+    songList.classList.toggle('show', willShow);
+
+    // aria ve buton görünümünü güncelle
+    setListBtnPressed(willShow);
+    updateListToggleAppearance(willShow);
+  });
+
+  // Ekran boyutu değişince durumu temizle / resetle
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 640) {
+      songList.classList.remove('show');
+      setListBtnPressed(false);
+      // görünümü varsayılana döndür
+      listToggleBtn.classList.remove('bg-orange-500', 'btn-active');
+      listToggleBtn.classList.add('bg-gray-1100');
+    } else {
+      // mobilde görünümü songList durumuna göre ayarla
+      updateListToggleAppearance(songList.classList.contains('show'));
+      setListBtnPressed(songList.classList.contains('show'));
+    }
+  });
+}
+
+if (searchBar) {
+  let searchDebounce = null;
+
+  // Mobilde yazınca listeyi açıp kapamak için ortak fonksiyon
+  function showListForSearch(show) {
+    // sadece circle yeşil ise liste kontrolü aktif olsun
+    if (!isOn()) return;
+    songList.classList.toggle('show', show);
+    setListBtnPressed(show);
+    updateListToggleAppearance(show);
+  }
+
+  // Girdi olunca filtrele — debounce ile
+  searchBar.addEventListener('input', (e) => {
+    // Eğer circle yeşil değilse, arama özellikleri DEVRE DIŞI
+    if (!isOn()) return;
+
+    clearTimeout(searchDebounce);
+    const value = e.target.value.trim().toLowerCase();
+
+    searchDebounce = setTimeout(() => {
+      // Tekrar kontrol (sınıf değiştiyse)
+      if (!isOn()) return;
+
+      // Filtreleme
+      filteredSongs = originalSongsOrder.filter(song =>
+        song.title.toLowerCase().includes(value) ||
+        song.artist.toLowerCase().includes(value)
+      );
+
+      // Listeyi yeniden çiz ve aktif öğeyi güncelle
+      renderSongList(filteredSongs);
+      updateActiveListItem();
+
+      // Mobil davranış: küçük ekranlarda yazı varsa listeyi aç
+      if (window.innerWidth < 640) {
+        if (value.length > 0) {
+          showListForSearch(true);
+        } else {
+          showListForSearch(false);
+        }
+      }
+    }, 150);
+  });
+
+  // Focus olduğunda (eğer isOn ve kutuda metin varsa) listeyi aç
+  searchBar.addEventListener('focus', () => {
+    if (!isOn()) return;
+    if (searchBar.value.trim().length > 0) showListForSearch(true);
+  });
+
+  // Eğer isOn() false ise, kullanıcı input'a yazsa bile hiçbir filtreleme/render çalışmayacak.
+  // (İstersen burada ayrıca input'u temizleyip placeholder gösterecek bir UX de ekleyebilirim.)
+}
+
+  let seeking    = false;
+  let volDragging = false;
+  let knobDragging = false;
+  let lastKnobAngle = 0;
+  volumeKnob.addEventListener('mousedown', (e) => {
+      // Sadece 'ON' durumunda çalışsın
+      if (!isOn()) return;
+
+      isKnobDragging = true;
+      // Sürüklerken metin seçimi gibi istenmeyen durumları engelle
+      e.preventDefault();
+      // İmleci değiştirerek kullanıcıya geri bildirim ver
+      document.body.style.cursor = 'grabbing';
+    });
+
+    // Fare bırakıldığında sürüklemeyi bitir (document üzerinde dinliyoruz)
+    document.addEventListener('mouseup', () => {
+      if (isKnobDragging) {
+        isKnobDragging = false;
+        document.body.style.cursor = 'default';
+      }
+    });
+
+    // Fare hareket ettiğinde sesi ayarla (document üzerinde dinliyoruz)
+    document.addEventListener('mousemove', (e) => {
+      // Sadece sürükleme modundaysak devam et
+      if (!isKnobDragging) return;
+
+      // 1. Topuzun merkez koordinatlarını al
+      const rect = volumeKnob.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      // 2. Farenin merkeze göre açısını hesapla
+      const deltaX = e.clientX - centerX;
+      const deltaY = e.clientY - centerY;
+      // Açı radyan cinsinden gelir, dereceye çeviririz
+      const rawAngle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+      
+      // 3. Açıyı topuzun kendi koordinat sistemine dönüştür (-180° ile 180° arası, 0° üstte)
+      let knobAngle = rawAngle + 90;
+      if (knobAngle > 180) {
+        knobAngle -= 360;
+      }
+
+      // 4. Açıya göre yeni ses seviyesini hesapla (0.0 ile 1.0 arası)
+      let newVolume;
+      const minAngle = -135;
+      const maxAngle = 135;
+
+      // Fare açısı izin verilen aralığın dışındaysa, en yakın sınıra sabitliyoruz.
+      if (knobAngle > maxAngle) {
+        newVolume = 1.0;
+      } else if (knobAngle < minAngle) {
+        newVolume = 0.0;
+      } else {
+        // Açıyı [-135, 135] aralığından [0, 1] aralığına dönüştür
+        newVolume = (knobAngle - minAngle) / (maxAngle - minAngle);
+      }
+      
+      // 5. Ses seviyesini ve tüm ilgili UI elemanlarını güncelle
+      currentVolume = newVolume; // Genel ses seviyesi değişkenini güncelle
+      audioPlayer.volume = newVolume;
+
+      // Sürükleme sırasında sessiz modunu kaldır
+      isMuted = false;
+      audioPlayer.muted = false;
+
+      // Topuzun pozisyonunu güncelle
+      updateVolumeKnob(newVolume);
+      
+      // Alttaki yatay ses çubuğunu güncelle
+      volumeBar.style.width = `${newVolume * 100}%`;
+
+      // Sağ alttaki ses ikonunu güncelle
+      if (newVolume <= 0) {
+          volIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
+      } else if (newVolume < 0.5) {
+          volIcon.innerHTML = '<i class="fas fa-volume-down"></i>';
+      } else {
+          volIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
+      }
+    });
+
+  function getAngleFromCenter(element, clientX, clientY) {
+  const rect = element.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const deltaX = clientX - centerX;
+  const deltaY = clientY - centerY;
+  let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+  angle = (angle + 360) % 360;
+  return angle;
+}
+  
+  function applySlidePosition() {
+  const isClippedCDFixed = clippedCD.style.top === '50%' && circle.classList.contains('bg-green-500');
+
+  if (window.innerWidth >= 375 && window.innerWidth < 1024) {
+    // md boyutu: alttan yukarı ortalı
+    slides.forEach(el => {
+      el.classList.remove('slide-element');
+      el.classList.add('slide-bottom');
+      el.style.left = '50%';
+      el.style.top = '90%';
+      el.style.transform = 'translate(-50%, 0%)';
+    });
+
+    if (!isClippedCDFixed) {
+      clippedCD.classList.remove('slide-element');
+      clippedCD.classList.add('slide-bottom');
+      clippedCD.style.left = '50%';
+
+      // 👇 özel durum: 375–640 px arasında biraz daha aşağıda olsun
+      if (window.innerWidth >= 375 && window.innerWidth < 640) {
+        clippedCD.style.top = '170%'; // veya 'calc(130% + 20px)'
+      } else {
+        clippedCD.style.top = '130%';
+      }
+
+      clippedCD.style.transform = 'translate(-50%, 0)';
+    }
+  } else {
+    // diğer boyutlar: sağdan sola
+    slides.forEach(el => {
+      el.classList.remove('slide-bottom');
+      el.classList.add('slide-element');
+      el.style.left = '';
+      el.style.top = '';
+      el.style.transform = '';
+    });
+
+    if (!isClippedCDFixed) {
+      clippedCD.classList.remove('slide-bottom');
+      clippedCD.classList.add('slide-element');
+      clippedCD.style.left = '';
+      clippedCD.style.top = '';
+      clippedCD.style.transform = '';
+    }
+  }
+}
+
+applySlidePosition();
+window.addEventListener('resize', applySlidePosition);
+ 
+  // Helper: sadece ON durumunda izin ver
+  function guard(fn) {
+    return e => {
+      if (!isOn()) return;
+      fn(e);
+    };
+  }
+
+  function onlyWhenCDCentered(fn) {
+    const isCenteredMd = () => clippedCD.style.top === '50%';
+    const isCenteredLg = () => clippedCD.classList.contains('left-1/2');
+  
+    return function(event) {
+      if (!isCenteredMd() && !isCenteredLg()) return;
+      fn.call(this, event);
+    };
+  }
+
+  // PROGRESS DRAG
+  progressContainer.addEventListener('mousedown', guard(e => {
+    seeking = true;
+    updateProgress(e);
+  }));
+  document.addEventListener('mousemove', e => {
+    if (!seeking) return;
+    updateProgress(e);
+  });
+  document.addEventListener('mouseup', () => {
+    seeking = false;
+  });
+  function updateProgress(e) {
+    const rect = progressContainer.getBoundingClientRect();
+    let pct = (e.clientX - rect.left) / rect.width;
+    pct = Math.max(0, Math.min(1, pct));
+    progressBar.style.width = `${pct * 100}%`;
+    audioPlayer.currentTime = pct * audioPlayer.duration;
+  }
+
+  // VOLUME BAR DRAG
+  volumeContainer.addEventListener('mousedown', guard(e => {
+    volDragging = true;
+    updateVolumeFromBar(e);
+  }));
+  document.addEventListener('mousemove', e => {
+    if (!volDragging) return;
+    updateVolumeFromBar(e);
+  });
+  document.addEventListener('mouseup', () => {
+    volDragging = false;
+  });
+  function updateVolumeFromBar(e) {
+  const rect = volumeContainer.getBoundingClientRect();
+  let pct = (e.clientX - rect.left) / rect.width;
+  pct = Math.max(0, Math.min(1, pct));
+  audioPlayer.volume = pct;
+  volumeBar.style.width = `${pct * 100}%`;
+  isMuted = false;
+  audioPlayer.muted = false;
+  volIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
+  updateVolumeKnob(pct);
+}
+
+
+
+
+
+  
+
+    // Populate song list
+    function renderSongList(songsToRender = filteredSongs) {
+      ul.innerHTML = '';
+      songsToRender.forEach((song, i) => {
+        const li = document.createElement('li');
+        li.innerHTML =
+          `<img src="${song.image}" alt="${song.title}" />` +
+          `<div class="info"><div class="title">${song.title}</div><div class="artist">${song.artist}</div></div>`;
+        li.addEventListener('click', () => {
+  
+  currentIndex = songs.indexOf(song);
+  loadSong(currentIndex);
+  updateActiveListItem();
+  audioPlayer.play();
+
+  // Mobil davranış: 640px altındaysa listeyi aşağıya gönder (gizle)
+  // ve footer'daki listToggle butonunu turuncu yap
+  if (window.innerWidth < 640 && listToggleBtn) {
+    songList.classList.remove('show');         // listeyi gizle (CSS mobile slide uygulayacak)
+    setListBtnPressed(false);                  // erişilebilirlik durumu güncelle
+    updateListToggleAppearance(false);         // butonu turuncu yap
+  }
+});
+        ul.appendChild(li);
+      });
+    }
+
+    function updateActiveListItem() {
+      ul.querySelectorAll('li').forEach((li, index) => {
+        const songInList = filteredSongs[index];
+        const currentSong = songs[currentIndex];
+        if (songInList && songInList.title === currentSong.title && songInList.artist === currentSong.artist) {
+            li.classList.add('active');
+        } else {
+            li.classList.remove('active');
+        }
+      });
+    }
+
+    renderSongList();
+
+    // Player functions
+    function loadSong(index) {
+      const song = songs[index];
+      audioPlayer.src = song.file;
+      footerArt.src = song.image;
+      footerTitle.textContent = song.title;
+      footerArtist.textContent = song.artist;
+      footerTitleMobile.textContent = song.title;
+      footerArtistMobile.textContent = song.artist;
+      updateActiveListItem();
+    }
+
+    function Pause() {
+      
+        audioPlayer.pause();
+      
+    }
+    function Play(){
+      audioPlayer.play();
+    }
+    function playPause() {
+      if (isPlaying) {
+        audioPlayer.pause();
+      } else {
+        audioPlayer.play();
+      }
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+  function updateVolumeKnob(volume) {
+  const startAngle = -135; // 8 o'clock
+  const endAngle = 135;   // 4 o'clock
+  const currentAngle = startAngle + (volume * 270); // 270° total range
+
+  const angleInRadians = (currentAngle * Math.PI) / 180;
+
+  // Responsive radius based on screen size
+  let radius = 25; // default
+  if (window.innerWidth >= 1536) radius = 30; // 2xl (Eski değer: 35)
+  else if (window.innerWidth >= 1280) radius = 25; // xl  (Eski değer: 30)
+  else if (window.innerWidth >= 1024) radius = 18; // lg  (Eski değer: 22)
+  else if (window.innerWidth >= 768) radius = 15;  // md  (Eski değer: 18)
+  else if (window.innerWidth >= 640) radius = 12;
+
+  else if (window.innerWidth >= 350) radius = 12; 
+  const x = Math.cos(angleInRadians) * radius;
+  const y = Math.sin(angleInRadians) * radius;
+
+  volumeKnobInner.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+    // Audio player event listeners
+    audioPlayer.addEventListener('play', () => {
+      isPlaying = true;
+      btnPlay.innerHTML = '<i class="fas fa-pause"></i>';
+      accelerating = true;
+      decelerating = false;
+      if (!animationId) {
+        animationId = requestAnimationFrame(rotate);
+      }
+    });
+
+    audioPlayer.addEventListener('pause', () => {
+      isPlaying = false;
+      btnPlay.innerHTML = '<i class="fas fa-play"></i>';
+      accelerating = false;
+      decelerating = true;
+    });
+
+    audioPlayer.addEventListener('timeupdate', () => {
+      if (seeking) return;
+      const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+      progressBar.style.width = `${progress || 0}%`;
+      currentTime.textContent = formatTime(audioPlayer.currentTime);
+    });
+
+    audioPlayer.addEventListener('loadedmetadata', () => {
+      totalTime.textContent = formatTime(audioPlayer.duration);
+    });
+
+    audioPlayer.addEventListener('ended', () => {
+      if (isRepeated) {
+        audioPlayer.currentTime = 0;
+        audioPlayer.play();
+      } else {
+        btnNext.click();
+      }
+    });
+
+    elpause.addEventListener('click', onlyWhenCDCentered(guard(Pause)));
+    elplay.addEventListener('click', onlyWhenCDCentered(guard(Play)));
+    
+    // Control button listeners
+    btnPlay.addEventListener('click', guard(playPause));
+
+    btnPrev.addEventListener('click', guard(() => {
+      currentIndex = (currentIndex - 1 + songs.length) % songs.length;
+      loadSong(currentIndex);
+      if (isPlaying) audioPlayer.play();
+      else audioPlayer.play();
+    }));
+
+    btnNext.addEventListener('click', guard(() => {
+      currentIndex = (currentIndex + 1) % songs.length;
+      loadSong(currentIndex);
+      if (isPlaying) audioPlayer.play();
+      else audioPlayer.play();
+    }));
+
+    // Shuffle button
+shuffleBtn.addEventListener('click', guard(() => {
+ 
+  isShuffled = !isShuffled;
+  
+  // Toggle visual active state
+  shuffleBtn.classList.toggle('buttonbutton', isShuffled);
+  
+  if (isShuffled) {
+    // Store current song to maintain playback
+    const currentSong = songs[currentIndex];
+    
+    // Create shuffled array
+    const shuffledSongs = shuffleArray([...originalSongsOrder]);
+    
+    // Find current song in shuffled array
+    currentIndex = shuffledSongs.findIndex(song => 
+      song.title === currentSong.title && song.artist === currentSong.artist
+    );
+    
+    // Update songs array
+    songs.length = 0; // Clear array
+    songs.push(...shuffledSongs); // Add shuffled songs
+    
+  } else {
+    // Return to original order
+    const currentSong = songs[currentIndex];
+    
+    // Reset to original order
+    songs.length = 0;
+    songs.push(...originalSongsOrder);
+    
+    // Find current song index in original order
+    currentIndex = songs.findIndex(song => 
+      song.title === currentSong.title && song.artist === currentSong.artist
+    );
+  }
+  
+  // Update displays
+  renderSongList();
+  updateActiveListItem();
+}));
+
+repeatBtn.addEventListener('click', guard(() => {
+ 
+  isRepeated = !isRepeated;
+  
+  // Toggle visual active state
+  repeatBtn.classList.toggle('buttonbutton', isRepeated);
+  
+  // Optional: Change icon when active
+  if (isRepeated) {
+    repeatBtn.innerHTML = '<i class="fas fa-redo text-l"></i>';
+  } else {
+    repeatBtn.innerHTML = '<i class="fas fa-redo text-l"></i>';
+  }
+}));
+
+    // Progress bar interaction
+    progressContainer.addEventListener('click', guard(updateProgress));
+
+    // Volume control
+    volIcon.addEventListener('click', guard(() => {
+      isMuted = !isMuted;
+      audioPlayer.muted = isMuted;
+      volumeBar.style.width = isMuted ? '0%' : `${audioPlayer.volume * 100}%`;
+      volIcon.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+      updateVolumeKnob(isMuted ? 0 : audioPlayer.volume);
+    }));
+
+    volumeContainer.addEventListener('click', guard(updateVolumeFromBar));
+    
+
+    // Search functionality
+   
+
+    // Initialize player
+    loadSong(currentIndex);
+    updateVolumeKnob(currentVolume);
+
+    // Original UI functionality
+    let isToggled = false;
+    let cdVisible = false;
+    let triangleToggled = false;
+    
+    
+    slides.forEach(el => el.classList.add('hide'));
+
+    function isOn() {
+      return circle.classList.contains('bg-green-500');
+    }
+
+    orangeBar.addEventListener('click', () => {
+      
+      isToggled = !isToggled;
+      circle.classList.toggle('bg-red-500', !isToggled);
+      circle.classList.toggle('bg-green-500', isToggled);
+      
+      if(isToggled) {
+        playOpen();
+        if (window.innerWidth >= 350 && window.innerWidth < 640) {
+    // md boyutu: mevcut kodun
+    orangeBar.classList.replace('top-[27.6%]', 'top-[12.6%]');
+          }
+
+
+          orangeBar.classList.replace('top-[27.6%]', 'top-[20.6%]');
+          if (!triangleToggled) {
+              slides.forEach(el => el.classList.replace('hide', 'show'));
+          } else {
+              songList.classList.add('show');
+              footer.classList.add('show');
+          }
+      } else {
+        playClose();
+        if (window.innerWidth >= 350 && window.innerWidth < 640) {
+    // md boyutu: mevcut kodun
+    orangeBar.classList.replace('top-[12.6%]', 'top-[27.6%]');
+          }
+          orangeBar.classList.replace('top-[20.6%]', 'top-[27.6%]');
+          audioPlayer.pause();
+          if (!triangleToggled) {
+              slides.forEach(el => el.classList.replace('show', 'hide'));
+              if (cdVisible) {
+                  clippedCD.classList.replace('show', 'hide');
+                  cdVisible = false;
+              }
+          } else {
+              songList.classList.remove('show');
+              footer.classList.remove('show');
+          }
+      }
+    });
+
+    clippedCD.classList.add('hide');
+
+    triggers.forEach(el => el.addEventListener('click',() => {
+      playClick();
+      if(!isOn()) return;
+      cdVisible = !cdVisible;
+      clippedCD.classList.toggle('hide', !cdVisible);
+      clippedCD.classList.toggle('show', cdVisible);
+    }));
+
+    // ==========================================================
+    // ===                 İŞTE DÜZELTME BURADA               ===
+    // ==========================================================
+    const tri = document.querySelector('.triangle1');
+    tri.addEventListener('click', () => {
+      if (!isOn() || !cdVisible) return;
+      
+      
+      
+      triangleToggled = !triangleToggled;
+      clippedCD.style.transition = 'all 3.5s ease'; // Animasyonu etkinleştir
+
+      // Ortak class ve state değişiklikleri
+      clippedCD.classList.toggle('z-0', !triangleToggled);
+      clippedCD.classList.toggle('z-20', triangleToggled);
+      cdwrapper.classList.toggle('z-20', triangleToggled);
+      triggers.forEach(el => el.classList.toggle('show', !triangleToggled));
+      triggers.forEach(el => el.classList.toggle('hide', triangleToggled));
+      songList.classList.toggle('show', triangleToggled);
+      footer.classList.toggle('show', triangleToggled);
+      audioPlayer.pause();
+      if (triangleToggled) {
+    // Aktifleştiğinde çalacak müzik
+    playInsert();
+  } else {
+    // Tekrar eski haline döndüğünde çalacak müzik
+    playRemove();
+  }
+
+const soksok = document.getElementById('siksok');
+  if (triangleToggled) {
+    
+    if (window.innerWidth >= 350 && window.innerWidth <= 640) {
+      soksok.classList.remove('xxs:invisible');
+      soksok.classList.add('xxs:visible');
+    }
+  } else {
+    // geri dönüşte tekrar eski haline çevirmek istersen:
+    if (window.innerWidth >= 350 && window.innerWidth <= 640) {
+      soksok.classList.remove('xxs:visible');
+      soksok.classList.add('xxs:invisible');
+    }
+  }
+
+
+      if (triangleToggled) {
+  if (window.innerWidth >= 350 && window.innerWidth < 1024) {
+    // md boyutu: mevcut kodun
+    const computedStyle = window.getComputedStyle(clippedCD);
+    cdReturnPosition = {
+      top: computedStyle.top,
+      left: computedStyle.left,
+      transform: computedStyle.transform,
+    };
+    clippedCD.style.top = '50%';
+    clippedCD.style.left = '50%';
+    clippedCD.style.transform = 'translate(-50%, -50%)';
+  } else {
+    // lg, xl, 2xl boyutları için de aynı merkezleme
+    const computedStyle = window.getComputedStyle(clippedCD);
+    cdReturnPosition = {
+      top: computedStyle.top,
+      left: computedStyle.left,
+      transform: computedStyle.transform,
+    };
+    clippedCD.style.top = '50%';
+    clippedCD.style.left = '50%';
+    clippedCD.style.transform = 'translate(-50%, -50%)';
+  }
+} else {
+  // geri dönüş
+  clippedCD.style.top = cdReturnPosition.top;
+  clippedCD.style.left = cdReturnPosition.left;
+  clippedCD.style.transform = cdReturnPosition.transform;
+}
+    });
+  });
+
+  // CD Döndürme Animasyonu (Bu kısım dosyanın en sonunda, script kapanış etiketinden önce)
+  let rotationAngle = 0;
+  let rotationSpeed = 0;
+  const maxSpeed = 6;
+  const acceleration = 0.1;
+  let accelerating = false;
+  let decelerating = false;
+  let animationId;
+
+  function rotate() {
+    if (accelerating && rotationSpeed < maxSpeed) {
+      rotationSpeed = Math.min(maxSpeed, rotationSpeed + acceleration);
+    }
+
+    if (decelerating && rotationSpeed > 0) {
+      rotationSpeed = Math.max(0, rotationSpeed - acceleration);
+    }
+
+    if (rotationSpeed > 0) {
+      rotationAngle = (rotationAngle + rotationSpeed) % 360;
+      const cdwrapper = document.getElementById('cdwrapper');
+      if(cdwrapper) cdwrapper.style.transform = `rotate(${rotationAngle}deg)`;
+      animationId = requestAnimationFrame(rotate);
+    } else {
+      decelerating = false;
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    }
+  }
+</script>
+</html>

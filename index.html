@@ -260,29 +260,11 @@
 img{
   -webkit-user-drag: none;
 }
-footer {
-  transform: translateY(100%);
-  transition: transform 1s ease-out;
-  /* MOBİL İÇİN EK */
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-}
 
-footer.show {
-  transform: translateY(0);
-}
-body {
-  padding-bottom: 7rem; /* footer yüksekliği kadar */
-}
+
 
 /* Main için üst margin ayarı */
-main {
-  margin-top: 0 !important;
-  padding-top: 1rem; /* header'dan biraz boşluk */
-}
+
     
 @media (max-width: 640px) {
   #songList {
@@ -307,35 +289,61 @@ main {
   }
   
 
-footer {
-    height: auto; /* sabit yükseklik yerine otomatik */
-  }
+
   
   footer .bg-gray-1000 {
     min-height: 7rem; /* 112px - h-28 */
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
   }
-body {
-    padding-bottom: 8rem; /* mobilde footer biraz daha yüksek */
+
+  
+  
+}
+@media (max-width: 399px) {
+  #songList {
+    top: 8%;
+    bottom: 17%;
+    right: 50%;
+    transform: translateY(100%) translateX(50%);
+    width: 100%; /* istersen tam genişlik */
+    max-height: 100%; /* üstünü kaplamasın diye */
+   
+    z-index: 100;
+    opacity: 0;
+     pointer-events: none;
+     transform: translateY(100%) translateX(50%);
+    transition: transform 1s ease-out, opacity 1s ease-out;
+  }
+  #songList.show {
+    transform: translateY(0) translateX(50%);
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) translateX(50%);
   }
   
-  main {
-    margin-top: 0.5rem !important;
-    padding-top: 0.5rem;
+
+
+  
+  footer .bg-gray-1000 {
+    min-height: 6.5rem; /* 112px - h-28 */
+    max-height: 6.5rem; /* 112px - h-28 */
+ 
+    padding-bottom: 0.75rem;
   }
+
+  
   
 }
 
-
     </style>
   </head>
-  <body class="bg-white min-h-screen flex flex-col overflow-hidden select-none max-xxs:invisible">
+  <body class="bg-white min-h-screen flex flex-col overflow-hidden select-none max-xxxs:invisible">
     <!-- Header -->
-    <header class="w-full h-20 bg-gray-1000 rounded-b-lg grid grid-cols-3 items-center px-4 relative max-sm:rounded-b-4xl z-100">
+    <header class="w-full h-20 bg-gray-1000 rounded-b-lg grid grid-cols-3 items-center px-4 relative sm:rounded-b-4xl xxs:rounded-b-4xl z-100 max-xxs:h-12 xxxs:rounded-b-2xl">
     <!-- Sol ikon -->
     <div class="2xl:ml-10 xl:ml-10 lg:ml-10 md:ml-10 sm:ml-10 flex items-center">
-        <i class="ml-5 fa-solid fa-music text-3xl text-gray-1100"></i>
+        <i class="ml-5 fa-solid fa-music text-3xl text-gray-1100 max-xxs:text-2xl"></i>
     </div>
 
     <!-- Orta kısım -->
@@ -344,7 +352,7 @@ body {
             <input 
                 type="text" 
                 id="searchBar" 
-                class="search-bar 2xl:h-10 xl:h-9 lg:h-8 md:h-8 sm:h-7 xxs:h-6
+                class="search-bar 2xl:h-10 xl:h-9 lg:h-8 md:h-8 sm:h-7 xxs:h-6 xxxs:h-6
                 
                 
                 w-full pl-3 pr-10 rounded-md border border-gray-400"
@@ -352,7 +360,7 @@ body {
             />
             <!-- ikon inputun sağında -->
             <i 
-                class="fa-solid fa-magnifying-glass text-gray-1000 2xl:text-2xl xl:text-xl lg:text-lg md:text-lg sm:text-base xxs:text-base
+                class="fa-solid fa-magnifying-glass text-gray-1000 2xl:text-2xl xl:text-xl lg:text-lg md:text-lg sm:text-base xxs:text-base xxxs:text-sm
                 absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
                 id="searchIcon">
             </i>
@@ -363,10 +371,10 @@ body {
     <div></div>
 </header>
 
-   <main class="flex-grow flex justify-center items-center p-4 2xl:mt-0 xl:mt-0 lg:mt-0 md:mt-12 sm:mt-12 xxs:mt-0  ">
+   <main class="flex-grow flex justify-center items-center p-4 2xl:mt-0 xl:mt-0 lg:mt-0 md:mt-12 sm:mt-12 xxs:mt-10  xxxs:mt-10">
     <div id="wrapper" class="relative w-full 
     
-    2xl:max-w-[1160px]    xl:max-w-[962px]  lg:max-w-[765px] md:max-w-[580px] sm:max-w-[485px]   xxs:max-w-[300px] 
+    2xl:max-w-[1160px]    xl:max-w-[962px]  lg:max-w-[765px] md:max-w-[580px] sm:max-w-[485px]   xxs:max-w-[300px]  xxxs:max-w-[280px]
     
     aspect-[1160/524]  ">
     
@@ -374,20 +382,15 @@ body {
       <!-- Background Panels -->
       <div class="absolute inset-0 bg-gray-1000 rounded-5xl z-20 
       
-      2xl:translate-x-[-5%] 2xl:translate-y-[2%] 2xl:w-[887px] 2xl:rotate-0 2xl:h-auto 2xl:top-[0px]
-      xl:translate-x-[-5%] xl:translate-y-[2%]  xl:w-[740px] xl:rotate-0 xl:h-auto xl:top-[0px]
-      lg:translate-y-[2%] lg:translate-x-[-4.5%] lg:w-[600px] lg:rotate-0 lg:h-auto lg:top-[0px]
-      md:w-[530px] md:rotate-90 md:h-[285px] md:translate-x-[4.5%] md:top-[-40px]
-      sm:w-[500px] sm:rotate-90 sm:h-[285px] sm:translate-x-[-1%] sm:top-[-85px]
-      
-      
-      
-      
-      
-      
-     
-      xxs:w-[420px] xxs:rotate-90 xxs:h-[250px] xxs:translate-x-[-14%] xxs:top-[-8.5rem]
-     
+    2xl:translate-x-[-5%] 2xl:translate-y-[2%] 2xl:w-[887px] 2xl:rotate-0 2xl:h-auto 2xl:top-[0px]
+    xl:translate-x-[-5%] xl:translate-y-[2%]  xl:w-[740px] xl:rotate-0 xl:h-auto xl:top-[0px]
+    lg:translate-y-[2%] lg:translate-x-[-4.5%] lg:w-[600px] lg:rotate-0 lg:h-auto lg:top-[0px]
+    md:w-[530px] md:rotate-90 md:h-[285px] md:translate-x-[4.5%] md:top-[-40px]
+    sm:w-[500px] sm:rotate-90 sm:h-[285px] sm:translate-x-[-1%] sm:top-[-85px]
+    xxs:w-[420px] xxs:rotate-90 xxs:h-[250px] xxs:translate-x-[-14%] xxs:top-[-8.5rem]
+
+
+    xxxs:w-[350px] xxxs:rotate-90 xxxs:h-[240px] xxxs:translate-x-[-10%] xxxs:top-[-7rem]
       
 
      
@@ -405,10 +408,9 @@ body {
       lg:w-[575px] lg:rotate-0 lg:translate-x-[15%] lg:translate-y-[2%]  lg:h-auto
       md:w-[444px] md:rotate-90  md:translate-x-[15%] md:h-[285px] md:translate-y-[1.5%]  
       sm:w-[400px] sm:rotate-90  sm:translate-x-[11.125%] sm:h-[286px] sm:translate-y-[-10%] 
-
-
-      
       xxs:w-[380px] xxs:rotate-90  xxs:translate-x-[-10.25%] xxs:h-[251.5px] xxs:translate-y-[-23%]
+
+      xxxs:w-[300px] xxxs:rotate-90  xxxs:translate-x-[-3%] xxxs:h-[240.5px] xxxs:translate-y-[-22%]
       "></div>
       
       <!-- Center Large Circle -->
@@ -421,8 +423,9 @@ body {
       lg:h-[330px] lg:w-[330px]
       md:w-[249px] md:h-[249px] md:left-[50%] md:top-1/2
       sm:w-[237.5px] sm:h-[237.5px] sm:left-[50%] sm:top-1/2
-     
       xxs:w-[225px] xxs:h-[225px] xxs:left-[50%] xxs:top-1/2
+
+      xxxs:w-[200px] xxxs:h-[200px] xxxs:left-[50%] xxxs:top-1/2
       
       bg-gray-1200 rounded-full z-20 translate-y-[-48%]"></div>
       
@@ -434,16 +437,17 @@ body {
       lg:h-[33px] lg:w-[33px] lg:top-1/2 lg:left-1/2 
       md:h-[24px] md:w-[24px] md:top-1/2 md:left-1/2 
       sm:h-[19px] sm:w-[19px] sm:top-1/2 sm:left-1/2
-     
       xxs:h-[20px] xxs:w-[20px] xxs:top-1/2 xxs:left-1/2
+
+      xxxs:h-[18px] xxxs:w-[18px] xxxs:top-1/2 xxxs:left-1/2
       
       bg-white rounded-full z-30 translate-y-[-29%]"></div>
 
       <!-- Center Song siksok -->
-      <div id="siksok" class="absolute -translate-x-1/2 left-1/2 top-[210%]   max-sm:h-10  max-sm:w-[200px] z-90 2xl:invisible xl:invisible lg:invisible md:invisible sm:invisible xxs:invisible">
+      <div id="siksok" class="absolute -translate-x-1/2 left-1/2 xxs:top-[210%] xxxs:top-[180%] max-sm:h-10  max-sm:w-[200px] z-90 2xl:invisible xl:invisible lg:invisible md:invisible sm:invisible xxs:invisible xxxs:invisible">
           
-          <div id="footerTitle" class="text-orange-400 text-2xl font-medium truncate text-center ">Select a Song</div>
-          <div id="footerArtist" class="text-gray-1100 text-xl truncate text-center">Artist</div>
+          <div id="footerTitle" class="text-orange-400 text-2xl font-medium truncate text-center xxxs:text-lg">Select a Song</div>
+          <div id="footerArtist" class="text-gray-1100 text-xl truncate text-center xxxs:text-base">Artist</div>
       </div>
       
       <!-- Card Image -->
@@ -455,12 +459,9 @@ body {
            lg:h-[330px] lg:w-[560px] lg:rotate-0 lg:rounded-5xl lg:translate-y-[-48%] lg:translate-x-[17%] 
            md:w-[430px] md:h-[270px] md:rotate-90 md:translate-x-[17%] md:translate-y-[-44%] md:rounded-5xl
            sm:w-[387.5px] sm:h-[275px] sm:rotate-90 sm:translate-x-[13%] sm:translate-y-[-48.5%] sm:rounded-5xl 
-          
-
-
-
-          
           xxs:w-[235px] xxs:h-[365px] xxs:rotate-0 xxs:translate-x-[14%] xxs:translate-y-[-49.5%] xxs:rounded-5xl 
+
+          xxxs:rounded-5xl xxxs:translate-x-[8%]   xxxs:translate-y-[-49%] xxxs:w-[240.5px] xxxs:h-[300px] xxxs:rotate-0
            z-80  "/>
 
       <!-- Right Vertical Bars -->
@@ -471,26 +472,24 @@ body {
       lg:h-[45px] lg:w-[25px]   lg:left-[80%] lg:top-[80%] lg:rotate-0
       md:h-[45px] md:w-[25px]  md:left-[32.5%]  md:top-[115%] md:rotate-90
       sm:h-[40px] sm:w-[25px] sm:left-[30.5%] sm:top-[115%] sm:rotate-90 
-
-
-
-   
       xxs:h-[40px] xxs:w-[25px] xxs:left-[22.5%] xxs:top-[140%] xxs:rotate-90
+
+      xxxs:h-[40px] xxxs:w-[25px] xxxs:left-[20%] xxxs:top-[130%] xxxs:rotate-90 
       "></div>
 
 
 
       <div class="absolute   bg-gray-1200 rounded-3xl z-90 
       
-       2xl:h-[40px] 2xl:w-[40px] 2xl:left-[82%] 2xl:rotate-0 2xl:top-1/8
-       xl:h-[33px] xl:w-[33px] xl:left-[82%] xl:rotate-0 xl:top-1/8
-       lg:h-[25px] lg:w-[25px] lg:left-[80%] lg:rotate-0 lg:top-1/8
-       md:h-[25px] md:w-[25px] md:left-[62.5%] md:rotate-90 md:top-[117.5%]
+      2xl:h-[40px] 2xl:w-[40px] 2xl:left-[82%] 2xl:rotate-0 2xl:top-1/8
+      xl:h-[33px] xl:w-[33px] xl:left-[82%] xl:rotate-0 xl:top-1/8
+      lg:h-[25px] lg:w-[25px] lg:left-[80%] lg:rotate-0 lg:top-1/8
+      md:h-[25px] md:w-[25px] md:left-[62.5%] md:rotate-90 md:top-[117.5%]
       sm:h-[25px] sm:w-[25px] sm:left-[66.5%] sm:rotate-90 sm:top-[118%] 
-
-
-      
       xxs:h-[25px] xxs:w-[25px] xxs:left-[72%] xxs:rotate-90 xxs:top-[144.5%]
+
+
+      xxxs:h-[25px] xxxs:w-[25px] xxxs:left-[75%] xxxs:rotate-90 xxxs:top-[135%] 
       
       " ></div>
 
@@ -502,10 +501,9 @@ body {
       lg:h-[360px] lg:w-[710px] lg:rotate-0 lg:translate-x-[-5%] lg:translate-y-[0%]
       md:h-[300px] md:w-[550px] md:rotate-90  max-lg:top-[-50px] md:translate-x-[2.5%] md:translate-y-[0%]
       sm:h-[300px] sm:w-[525px] sm:rotate-90  sm:translate-x-[-3.5%] sm:translate-y-[-13.5%]
-
-
-      
       xxs:h-[275px] xxs:w-[500px] xxs:rotate-90  xxs:translate-x-[-19.5%] xxs:translate-y-[-25%]
+
+      xxxs:h-[255px] xxxs:w-[400px] xxxs:rotate-90  xxxs:translate-x-[-15%] xxxs:translate-y-[-20%] 
       
       
       "></div>
@@ -519,14 +517,10 @@ body {
       lg:w-[20px] lg:left-[80.5%] lg:top-[86.5%] lg:rotate-0
       md:w-[18px] md:left-[31.75%] md:rotate-90 md:top-[120.5%]
       sm:w-[16px] sm:left-[30%] sm:rotate-90 sm:top-[121%] 
-      
-
-
-
-
-
-      
       xxs:w-[16px] xxs:left-[22%] xxs:rotate-90 xxs:top-[149%]
+
+
+      xxxs:w-[15px] xxxs:left-[19.5%] xxxs:rotate-90 xxxs:top-[140%] 
       
       "></div>
       
@@ -540,12 +534,10 @@ body {
       lg:h-[20px] lg:left-[80.3%] lg:top-[13.5%] lg:rotate-0
       md:h-[18px] md:left-[63.375%] md:rotate-90 md:top-[118.5%] 
       sm:h-[17px] sm:left-[67.625%] sm:rotate-90 sm:top-[119%] 
-
-
-
-
-     
       xxs:h-[17px] xxs:left-[73.5%] xxs:rotate-90 xxs:top-[146%]
+
+
+      xxxs:h-[16px] xxxs:left-[77%] xxxs:rotate-90 xxxs:top-[138%] 
       "
       
       
@@ -558,12 +550,9 @@ body {
       lg:w-[20px] lg:h-[5px] lg:left-[80.5%] lg:top-[84.5%] lg:rotate-0
       md:w-[18px] md:h-[5px] md:left-[34%] md:top-[122.75%] md:rotate-90 
       sm:w-[16px] sm:h-[4.5px] sm:left-[32.5%] sm:top-[123%] sm:rotate-90 
-
-
-
-
-      
       xxs:w-[16px] xxs:h-[4.5px] xxs:left-[25.5%] xxs:top-[152.5%] xxs:rotate-90
+
+      xxxs:w-[15px] xxxs:h-[4.5px] xxxs:left-[23.5%] xxxs:top-[144%] xxxs:rotate-90 
       
       
       
@@ -580,11 +569,10 @@ body {
       lg:w-[20px] lg:h-[5px] lg:left-[80.5%] lg:top-[82%] lg:rotate-0
       md:w-[18px] md:h-[5px] md:left-[35.25%] md:top-[122.75%] md:rotate-90
       sm:w-[16px] sm:h-[4.5px] sm:left-[34%] sm:top-[123%] sm:rotate-90 
-
-
-
-      
       xxs:w-[16px] xxs:h-[4.5px] xxs:left-[27.75%] xxs:top-[152.5%] xxs:rotate-90
+
+ 
+      xxxs:w-[15px] xxxs:h-[4.5px] xxxs:left-[26%] xxxs:top-[144%] xxxs:rotate-90 
       bg-orange-400 rounded-5xl z-100"></div>
 </div>
       <!-- Left Bottom Circles -->
@@ -595,13 +583,9 @@ body {
       lg:h-[25px] lg:w-[25px] lg:left-[2.222224%] lg:top-1/5 
       md:h-[25px] md:w-[25px] md:left-[32%] md:top-[-47%]
       sm:h-[25px] sm:w-[25px] sm:left-[29.9%] sm:top-[-67%] 
-
-
-
-
       xxs:h-[25px] xxs:w-[25px] xxs:left-[21%] xxs:top-[-135%]
 
-      
+      xxxs:h-[20px] xxxs:w-[20px] xxxs:left-[21%] xxxs:top-[-105%] 
       
       bg-gray-1200 rounded-3xl z-50"></div>
       <div class="absolute 
@@ -611,11 +595,9 @@ body {
       lg:h-[65px] lg:w-[65px] lg:top-[65%] lg:left-[-0.5%] 
       md:h-[50px] md:w-[50px] md:top-[-52.5%] md:left-[57.5%]
       sm:h-[55px] sm:w-[55px] sm:top-[-74.5%] sm:left-[59%]
-      
-      
-
-     
       xxs:h-[55px] xxs:w-[55px] xxs:top-[-147.5%] xxs:left-[64%]
+
+      xxxs:h-[50px] xxxs:w-[50px] xxxs:top-[-117.5%] xxxs:left-[64%] 
 
       
       bg-gray-1200 rounded-full z-50"></div>
@@ -627,11 +609,9 @@ body {
       lg:left-[2.2%] lg:top-[10.5%] lg:text-base
       md:left-[32.25%] md:top-[-57.5%] md:text-base
       sm:left-[30%] sm:top-[-80%]  sm:text-base
-
-
-
-    
      xxs:left-[21.5%] xxs:top-[-155%] xxs:text-sm
+
+     xxxs:left-[21.25%] xxxs:top-[-125%] xxxs:text-xs 
     
       ">ON</p>
       <p class="absolute  z-50
@@ -640,10 +620,9 @@ body {
       lg:left-[2.1%] lg:top-[31%] lg:text-base
       md:left-[32%] md:top-[-36.5%] md:text-base
       sm:left-[29.75%] sm:top-[-55.75%] sm:text-base
-
-
-    
       xxs:left-[21%] xxs:top-[-110%] xxs:text-sm
+
+      xxxs:left-[21%] xxxs:top-[-82.5%] xxxs:text-xs 
 
 
 
@@ -657,12 +636,8 @@ body {
            lg:h-[35px] lg:w-[15px] lg:left-[3.9%] lg:visible lg:-translate-x-1/2 lg:-translate-y-1/2 
            md:h-[30px] md:w-[12.5px] md:left-[34.25%] md:visible md:-translate-x-1/2 md:-translate-y-[640%] 
            sm:h-[30px] sm:w-[12.5px] sm:left-[32.5%]  sm:-translate-x-1/2 sm:-translate-y-[670%] 
-
-
-
-       
            xxs:w-[12.5px] xxs:h-[30px] xxs:left-[25.25%] xxs:-translate-x-1/2 xxs:-translate-y-[700%]
-           
+           xxxs:w-[12px] xxxs:h-[30px] xxxs:left-[24.5%] xxxs:-translate-x-1/2 xxxs:-translate-y-[545%] 
            
            bg-orange-400 border shadow-2xl rounded-full z-50 transition-all duration-300 ease-in-out cursor-pointer">
       </div>
@@ -676,12 +651,9 @@ body {
              lg:top-[23.5%] lg:left-[0%] lg:h-[15px] lg:w-[15px] 
              md:top-[-42%] md:left-[30%] md:h-[10px] md:w-[10px]
              sm:top-[-62%] sm:left-[28%] sm:h-[10px] sm:w-[10px] 
-
-
-
-
-          
              xxs:top-[-125%] xxs:left-[17.5%] xxs:h-[10px] xxs:w-[10px]
+
+             xxxs:top-[-96%] xxxs:left-[17.5%] xxxs:h-[10px] xxxs:w-[10px] 
              bg-red-500 rounded-full z-50 transition-colors duration-300 ease-in-out">
       </div>
 
@@ -692,11 +664,9 @@ body {
       lg:top-[82%] lg:left-[-2%]  lg:text-base
       md:top-[-37.5%] md:left-[54.5%]  md:text-base
       sm:top-[-55.5%] sm:left-[54.5%]  sm:text-base
-      
-      
-
-
       xxs:top-[-115%] xxs:left-[58%]  xxs:text-sm
+
+      xxxs:top-[-90%] xxxs:left-[58%]  xxxs:text-xs 
       ">Min</p>
       <p class="absolute   z-50
       2xl:left-[7.5%] 2xl:top-[82%] 2xl:text-lg
@@ -704,10 +674,9 @@ body {
       lg:left-[6.5%] lg:top-[82%] lg:text-base
       md:left-[65%] md:top-[-37.5%] md:text-base
       sm:left-[70%] sm:top-[-55.5%] sm:text-base
-
-
-     
       xxs:left-[80%] xxs:top-[-115%]  xxs:text-sm
+      xxxs:top-[-90%] xxxs:left-[81%]  xxxs:text-xs 
+
       ">Max</p>
       <p class="absolute   z-50
       2xl:top-[60%] 2xl:left-[1%] 2xl:text-lg
@@ -715,10 +684,8 @@ body {
       lg:top-[58%] lg:left-[0.2%] lg:text-base
       md:top-[-60.5%] md:left-[57%] md:text-base
       sm:top-[-84%] sm:left-[59%] sm:text-base
-      
-      
- 
        xxs:top-[-161%] xxs:left-[65%] xxs:text-sm
+      xxxs:top-[-130%] xxxs:left-[65.2%]  xxxs:text-xs 
 
       ">Volume</p>
       
@@ -729,10 +696,11 @@ body {
       lg:h-[50px] lg:w-[50px] lg:left-[0.45%] lg:top-[67.25%]
       md:h-[42px] md:w-[42px] md:left-[58.26%] md:top-[-51%]
       sm:h-[45px] sm:w-[45px] sm:left-[60%] sm:top-[-72%] 
-
-
-    
       xxs:h-[45px] xxs:w-[45px] xxs:left-[65.75%] xxs:top-[-143.5%]
+
+
+       xxxs:h-[40px] xxxs:w-[40px] xxxs:left-[65.75%] xxxs:top-[-113.5%] 
+
       bg-orange-400 rounded-full z-55 ">
 
 
@@ -745,10 +713,11 @@ body {
   lg:w-[6px] lg:h-[6px]
   md:w-[5px] md:h-[5px]
   sm:w-[5px] sm:h-[5px]
-
-
- 
   xxs:w-[5px] xxs:h-[5px]
+
+
+  xxxs:w-[4px] xxxs:h-[4px] 
+
   rounded-full
   bg-white rotate-270  
   "></div>
@@ -761,10 +730,9 @@ body {
        lg:h-[330px] lg:w-[330px]
       md:h-[250px] md:w-[250px]
       sm:h-[235px] sm:w-[235px]
-
-    
       xxs:h-[225px] xxs:w-[225px]
        
+      xxxs:h-[200px] xxxs:w-[200px]
        show slide-element absolute top-[49%] left-[91.5%] -translate-x-1/2 translate-y-[-47.2%]  object-cover z-0 transition-all duration-1000">
        <img id="cdwrapper"
          src="https://music-deneme.pages.dev/image/cdnew"
@@ -788,6 +756,7 @@ body {
         sm:h-[150px]
      
         xxs:h-[125px]
+        xxxs:h-[100px]
 
          
          
@@ -806,7 +775,7 @@ body {
         sm:h-[130px]
         
         xxs:h-[120px]
-        
+        xxxs:h-[100px] 
          
          
          object-cover z-50"/>
@@ -817,12 +786,12 @@ body {
   </main>
 
   <!-- Song List -->
- <div id="songList" class="rounded-2xl max-sm:rounded-3xl sm:w-[165px] md:w-[215px] lg:w-[215px] xl:w-[250px] 2xl:w-[300px] 2xl:visible xl:visible lg:visible md:visible sm:visible xxs:visible">
+ <div id="songList" class="rounded-2xl max-sm:rounded-3xl sm:w-[165px] md:w-[215px] lg:w-[215px] xl:w-[250px] 2xl:w-[300px] 2xl:visible xl:visible lg:visible md:visible sm:visible xxs:visible xxxs:visible">
   <ul></ul>
 </div>
 
 
-<footer class="flex items-end z-100 fixed bottom-0 left-0 right-0">
+<footer class="flex items-end z-100">
   <div class="w-full bg-gray-1000 px-4 py-3 rounded-t-lg h-20 relative max-sm:rounded-t-4xl
               max-sm:h-28 max-sm:py-0">
     <div class="flex items-center justify-between max-w-full">
@@ -1551,6 +1520,19 @@ window.addEventListener('resize', applySlidePosition);
         btnNext.click();
       }
     });
+audioPlayer.addEventListener("volumechange", () => {
+  updateVolumeKnob(audioPlayer.volume);
+  volumeBar.style.width = `${audioPlayer.volume * 100}%`;
+
+  if (audioPlayer.volume <= 0) {
+    volIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
+  } else if (audioPlayer.volume < 0.5) {
+    volIcon.innerHTML = '<i class="fas fa-volume-down"></i>';
+  } else {
+    volIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
+  }
+});
+
 
     elpause.addEventListener('click', onlyWhenCDCentered(guard(Pause)));
     elplay.addEventListener('click', onlyWhenCDCentered(guard(Play)));
@@ -1706,6 +1688,7 @@ repeatBtn.addEventListener('click', guard(() => {
       }
     });
 
+
     clippedCD.classList.add('hide');
 
     triggers.forEach(el => el.addEventListener('click',() => {
@@ -1751,12 +1734,16 @@ const soksok = document.getElementById('siksok');
     if (window.innerWidth >= 350 && window.innerWidth <= 640) {
       soksok.classList.remove('xxs:invisible');
       soksok.classList.add('xxs:visible');
+      soksok.classList.remove('xxsx:invisible');
+      soksok.classList.add('xxxs:visible');
     }
   } else {
     // geri dönüşte tekrar eski haline çevirmek istersen:
     if (window.innerWidth >= 350 && window.innerWidth <= 640) {
       soksok.classList.remove('xxs:visible');
       soksok.classList.add('xxs:invisible');
+      soksok.classList.remove('xxxs:visible');
+      soksok.classList.add('xxxs:invisible');
     }
   }
 

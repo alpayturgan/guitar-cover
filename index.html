@@ -1182,6 +1182,71 @@ if (searchBar) {
   let volDragging = false;
   let knobDragging = false;
   let lastKnobAngle = 0;
+
+volumeKnob.addEventListener('pointerdown', (e) => {
+  if (!isOn()) return;
+  isKnobDragging = true;
+  try { volumeKnob.setPointerCapture && volumeKnob.setPointerCapture(e.pointerId); } catch {}
+  e.preventDefault();
+  document.body.style.cursor = 'grabbing';
+});
+
+volumeContainer.addEventListener('pointerdown', (e) => {
+  if (!isOn()) return;
+  volDragging = true;
+  try { volumeContainer.setPointerCapture && volumeContainer.setPointerCapture(e.pointerId); } catch {}
+  updateVolumeFromBar(e); // mevcut fonksiyonu yeniden kullanıyoruz (e.clientX çalışır)
+});
+
+document.addEventListener('pointermove', (e) => {
+  // knob sürükleme
+  if (isKnobDragging) {
+    const rect = volumeKnob.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const deltaX = e.clientX - centerX;
+    const deltaY = e.clientY - centerY;
+    let rawAngle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+    let knobAngle = rawAngle + 90;
+    if (knobAngle > 180) knobAngle -= 360;
+    const minAngle = -135, maxAngle = 135;
+    let newVolume;
+    if (knobAngle > maxAngle) newVolume = 1.0;
+    else if (knobAngle < minAngle) newVolume = 0.0;
+    else newVolume = (knobAngle - minAngle) / (maxAngle - minAngle);
+
+    currentVolume = newVolume;
+    audioPlayer.volume = newVolume;
+    isMuted = false;
+    audioPlayer.muted = false;
+    updateVolumeKnob(newVolume);           // knob iç pozisyonunu güncelleyen fonksiyonun zaten var
+    volumeBar.style.width = `${newVolume * 100}%`;
+    if (newVolume <= 0) volIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
+    else if (newVolume < 0.5) volIcon.innerHTML = '<i class="fas fa-volume-down"></i>';
+    else volIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
+  }
+
+  // bar sürükleme
+  if (volDragging) {
+    updateVolumeFromBar(e); // mevcut fonksiyon clientX'e dayanıyor, pointer event ile çalışır
+  }
+});
+
+document.addEventListener('pointerup', (e) => {
+  if (isKnobDragging) {
+    isKnobDragging = false;
+    try { volumeKnob.releasePointerCapture && volumeKnob.releasePointerCapture(e.pointerId); } catch {}
+    document.body.style.cursor = 'default';
+  }
+  if (volDragging) {
+    volDragging = false;
+    try { volumeContainer.releasePointerCapture && volumeContainer.releasePointerCapture(e.pointerId); } catch {}
+  }
+});
+
+
+
+
   volumeKnob.addEventListener('mousedown', (e) => {
       // Sadece 'ON' durumunda çalışsın
       if (!isOn()) return;
